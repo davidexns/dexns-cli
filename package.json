@@ -1,0 +1,41 @@
+{
+  "name": "dexns-cli",
+  "version": "0.0.1",
+  "description": "Project starter CLI with some sensible additional defaults",
+  "main": "src/dexns.js",
+  "bin": {
+    "dexns": "bin/dexns"
+  },
+  "scripts": {
+    "start": "echo \"nodemon --watch 'src/**/*.js' --exec src/dexns.js is not yet the right command\"",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint src/**"
+  },
+  "keywords": [
+    "cli"
+  ],
+  "author": "David Evans",
+  "license": "ISC",
+  "preferGlobal": true,
+  "dependencies": {
+    "execa": "^3.2.0",
+    "inquirer": "^7.0.0",
+    "listr": "^0.14.3",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.5.0",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "husky": "^3.0.9",
+    "jest": "^24.9.0",
+    "lint-staged": "^9.4.2",
+    "nodemon": "^1.19.4",
+    "prettier": "^1.18.2"
+  },
+  "engines": {
+    "node": ">=8.5.0"
+  }
+}

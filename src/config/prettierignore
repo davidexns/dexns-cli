@@ -1,0 +1,9 @@
+node_modules/
+coverage/
+dist/
+build/
+public/
+.next/
+.cache/
+package.json
+package-lock.json
