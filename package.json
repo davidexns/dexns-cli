@@ -17,6 +17,7 @@
   "license": "ISC",
   "preferGlobal": true,
   "dependencies": {
+    "commander": "^4.0.1",
     "execa": "^3.2.0",
     "listr": "^0.14.3",
     "path": "^0.12.7",
@@ -31,7 +32,6 @@
     "husky": "^3.0.9",
     "jest": "^24.9.0",
     "lint-staged": "^9.4.2",
-    "nodemon": "^1.19.4",
     "prettier": "^1.18.2"
   },
   "engines": {

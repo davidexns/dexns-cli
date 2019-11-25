@@ -1,3 +1,4 @@
+const prompts = require('prompts')
 const Listr = require('listr')
 const {
   createConfigs,
@@ -13,6 +14,42 @@ const {
 //   'next',
 //   'react-native',
 // ]
+const projectTypes = ['gatsby', 'next', 'react-native']
+const webProjectTypes = [
+  { value: 'next', title: 'Next' },
+  { value: 'gatsby', title: 'Gatsby' },
+]
+
+const questions = {
+  projectType: {
+    type: 'select',
+    name: 'projectType',
+    message: 'Which type of project would you like to create?',
+    choices: [
+      ...webProjectTypes,
+      { value: 'react-native', title: 'React Native' },
+    ],
+  },
+  projectName: {
+    type: 'text',
+    name: 'projectName',
+    message: 'What would you like to name your project?',
+    validate: input => input.length > 0 || 'Please provide a project name',
+  },
+  // typeScript: {
+  //   type: 'confirm',
+  //   name: 'includeTypeScript',
+  //   message: 'Would you like to use TypeScript?',
+  //   default: false,
+  // },
+  // cypress: {
+  //   when: answers => webProjectTypes.includes(answers.projectType),
+  //   name: 'includeCypress',
+  //   type: 'confirm',
+  //   message: 'Would you like to include Cypress?',
+  //   default: false,
+  // },
+}
 
 function getProjectConfig(type) {
   switch (type.toLowerCase()) {
@@ -39,13 +76,39 @@ function getProjectConfig(type) {
   }
 }
 
-function runInit(answers) {
+async function actionHandler(projectType, projectName, options) {
+  let isCancel = false
+  const onCancel = () => (isCancel = true)
+
+  const answers = {
+    ...(projectType && projectTypes.includes(projectType)
+      ? { projectType }
+      : await prompts(questions.projectType, { onCancel })),
+    ...(projectName
+      ? { projectName }
+      : await prompts(
+          {
+            ...questions.projectName,
+            type: isCancel ? null : questions.projectName.type,
+          },
+          { onCancel }
+        )),
+  }
+
+  // Run the init if user didn't cancel
+  if (!isCancel) {
+    runInit(answers, options)
+  }
+}
+
+function runInit(answers, options) {
   const {
     projectType,
     projectName,
     includeTypeScript = false,
     // includeCypress = false,
   } = answers
+  const { openCode = false } = options
   const { initCommand, devDeps = [], configTasks = [] } = getProjectConfig(
     projectType
   )
@@ -97,7 +160,6 @@ function runInit(answers) {
     // TODO: Create jest setup file
     // {
     //   title: 'Creating jest setup file',
-    //   enabled: () => isWeb,
     //   task: () => {},
     // },
     {
@@ -107,7 +169,9 @@ function runInit(answers) {
     // TODO: Add/run any project-specific tasks
   ])
     .run()
-    .then(() => openProject(projectName))
+    .then(() => {
+      if (openCode) openProject(projectName)
+    })
 }
 
-module.exports = runInit
+module.exports = actionHandler

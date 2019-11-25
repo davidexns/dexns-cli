@@ -8,7 +8,8 @@ If you clone the repository and run `yarn link` or `npm link`, the CLI can then 
 
 ## TODO
 
-- [ ] Parse command line arguments instead of needing to go through the prompted flow
+- [x] Parse command line arguments instead of needing to go through the prompted flow
+- [x] Catch projectTypes that do not match being passed via command line
 - [ ] Additional Next and Gatsby project-specific setup
 - [ ] Options for Cypress and TypeScript configuration
 - [ ] Safeguards and error handling for directories already existing, etc

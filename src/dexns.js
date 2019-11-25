@@ -1,52 +1,51 @@
-const prompts = require('prompts')
+const Commander = require('commander')
+// const prompts = require('prompts')
 const init = require('./commands/init')
+const packageJson = require('../package.json')
 
-const webProjectTypes = [
-  { value: 'next', title: 'Next' },
-  { value: 'gatsby', title: 'Gatsby' },
-]
+const program = new Commander.Command('dexns').version(packageJson.version)
 
-const questions = [
-  {
-    type: 'select',
-    name: 'projectType',
-    message: 'Which type of project would you like to create?',
-    choices: [
-      ...webProjectTypes,
-      { value: 'react-native', title: 'React Native' },
-    ],
-  },
-  {
-    type: 'text',
-    name: 'projectName',
-    message: 'What would you like to name your project?',
-    validate: input => input.length > 0 || 'Please provide a project name',
-  },
-  // {
-  //   type: 'confirm',
-  //   name: 'includeTypeScript',
-  //   message: 'Would you like to use TypeScript?',
-  //   default: false,
-  // },
-  // {
-  //   when: answers => webProjectTypes.includes(answers.projectType),
-  //   name: 'includeCypress',
-  //   type: 'confirm',
-  //   message: 'Would you like to include Cypress?',
-  //   default: false,
-  // },
-]
+program
+  .command('init [project-type] [project-name]')
+  .alias('i')
+  .description('Create a new project with sensible defaults')
+  .option('-O, --open-code', 'Open the new repository in VS Code')
+  // .option('-C, --include-cypress', 'include cypress dependency and config')
+  // .option(
+  //   '-T, --include-typescript',
+  //   'include typescript dependencies and configuration'
+  // )
+  .action(init)
 
-async function run() {
-  let isCancel = false
-  const response = await prompts(questions, {
-    onCancel: () => {
-      isCancel = true
-    },
-  })
-  if (!isCancel) {
-    init(response)
-  }
+program.parse(process.argv)
+
+// async function defaultRunner() {
+//   const response = await prompts({
+//     type: 'select',
+//     name: 'cmd',
+//     message: 'What action would you like to perform?',
+//     choices: [
+//       { value: 'init', title: 'Create a new project' },
+//       { value: 'other', title: 'Something else' },
+//     ],
+//   })
+
+//   // Run the handler based on the specified command
+//   switch (response.cmd) {
+//     case 'init': {
+//       return initAction()
+//     }
+//     case 'other': {
+//       return otherHandlerButThisIsNotRealRightNow()
+//     }
+//     default: {
+//       return
+//     }
+//   }
+// }
+
+if (process.argv.length < 3) {
+  // TODO: default to init for now, eventually prompt for an action type
+  // defaultRunner()
+  init()
 }
-
-run()
