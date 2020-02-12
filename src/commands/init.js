@@ -40,14 +40,14 @@ const questions = {
   //   type: 'confirm',
   //   name: 'includeTypeScript',
   //   message: 'Would you like to use TypeScript?',
-  //   default: false,
+  //   initial: true,
   // },
   // cypress: {
-  //   when: answers => webProjectTypes.includes(answers.projectType),
+  // when: answers => webProjectTypes.includes(answers.projectType),
   //   name: 'includeCypress',
   //   type: 'confirm',
   //   message: 'Would you like to include Cypress?',
-  //   default: false,
+  //   initial: true,
   // },
 }
 
@@ -95,13 +95,18 @@ async function actionHandler(projectType, projectName, options) {
         )),
   }
 
+  // If the user went through the prompt flow, ask about Cypress and TypeScript
+  // if (!projectName) {
+  // save the options here
+  // }
+
   // Run the init if user didn't cancel
   if (!isCancel) {
     runInit(answers, options)
   }
 }
 
-function runInit(answers, options) {
+function runInit(answers, options = {}) {
   const {
     projectType,
     projectName,
@@ -128,6 +133,8 @@ function runInit(answers, options) {
             'babel-jest',
             'eslint',
             'eslint-config-prettier',
+            'eslint-plugin-import',
+            'eslint-plugin-jest',
             'eslint-plugin-prettier',
             'eslint-plugin-react',
             'eslint-plugin-react-hooks',

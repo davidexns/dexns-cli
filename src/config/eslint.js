@@ -12,6 +12,9 @@ module.exports = {
     'plugin:jest/recommended',
     'prettier',
     'prettier/react',
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    // "plugin:import/typescript",
   ],
   overrides: [
     {
@@ -29,9 +32,18 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['prettier', 'react', 'react-hooks', 'jest'],
+  rules: {
+    'import/first': ['error', 'absolute-first'],
+  },
   settings: {
     react: {
       version: 'detect',
     },
+    // Below line if TypeScript
+    // 'import/resolver': {
+    //   node: {
+    //     extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    //   },
+    // },
   },
 }
