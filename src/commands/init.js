@@ -110,7 +110,7 @@ function runInit(answers, options = {}) {
   const {
     projectType,
     projectName,
-    includeTypeScript = false,
+    includeTypeScript = true,
     // includeCypress = false,
   } = answers
   const { openCode = false } = options
@@ -135,9 +135,12 @@ function runInit(answers, options = {}) {
             'eslint-config-prettier',
             'eslint-plugin-import',
             'eslint-plugin-jest',
+            'eslint-plugin-jest-dom',
+            'eslint-plugin-jsx-a11y',
             'eslint-plugin-prettier',
             'eslint-plugin-react',
             'eslint-plugin-react-hooks',
+            'eslint-plugin-testing-library',
             'husky',
             'jest',
             'lint-staged',

@@ -10,11 +10,17 @@ module.exports = {
     'eslint:recommended',
     'plugin:react/recommended',
     'plugin:jest/recommended',
+    'plugin:jest-dom/recommended',
+    'plugin:jsx-a11y/recommended',
+    // May have to adjust this one if I add svelte
+    'plugin:testing-library/react',
     'prettier',
     'prettier/react',
     'plugin:import/errors',
     'plugin:import/warnings',
-    // "plugin:import/typescript",
+    'plugin:import/typescript',
+    'plugin:@typescript-eslint/recommended',
+    'prettier/@typescript-eslint',
   ],
   overrides: [
     {
@@ -31,7 +37,15 @@ module.exports = {
     },
     sourceType: 'module',
   },
-  plugins: ['prettier', 'react', 'react-hooks', 'jest'],
+  plugins: [
+    'prettier',
+    'react',
+    'react-hooks',
+    'jest',
+    'jest-dom',
+    'jsx-a11y',
+    'testing-library',
+  ],
   rules: {
     'import/first': ['error', 'absolute-first'],
   },
@@ -40,10 +54,10 @@ module.exports = {
       version: 'detect',
     },
     // Below line if TypeScript
-    // 'import/resolver': {
-    //   node: {
-    //     extensions: ['.js', '.jsx', '.ts', '.tsx'],
-    //   },
-    // },
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+    },
   },
 }
