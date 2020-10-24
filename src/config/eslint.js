@@ -5,7 +5,6 @@ module.exports = {
     'jest/globals': true,
   },
   extends: [
-    // add cypress and typescript if flagged
     // differing plugins based on project type?
     'eslint:recommended',
     'plugin:react/recommended',
@@ -53,7 +52,6 @@ module.exports = {
     react: {
       version: 'detect',
     },
-    // Below line if TypeScript
     'import/resolver': {
       node: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
