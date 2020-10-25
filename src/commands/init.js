@@ -14,9 +14,10 @@ const {
 //   'next',
 //   'react-native',
 // ]
-const projectTypes = ['gatsby', 'next', 'react-native']
+const projectTypes = ['gatsby', 'next', 'sapper', 'react-native']
 const webProjectTypes = [
   { value: 'next', title: 'Next' },
+  { value: 'sapper', title: 'Sapper (Svelte)' },
   { value: 'gatsby', title: 'Gatsby' },
 ]
 
@@ -52,15 +53,23 @@ const questions = {
 }
 
 function getProjectConfig(type) {
+  const reactWebDeps = [
+    '@testing-library/react',
+    'eslint-plugin-jsx-a11y',
+    'eslint-plugin-react',
+    'eslint-plugin-react-hooks',
+  ]
   switch (type.toLowerCase()) {
     case 'gatsby':
       // TODO: will need a jest-preprocess file with babel-preset-gatsby
       return {
         initCommand: 'gatsby new',
+        devDeps: reactWebDeps,
       }
     case 'next':
       return {
         initCommand: 'create-next-app',
+        devDeps: reactWebDeps,
       }
     case 'react-native':
       return {
@@ -69,6 +78,21 @@ function getProjectConfig(type) {
           'eslint-plugin-react-native',
           '@testing-library/jest-native',
           '@testing-library/react-native',
+        ],
+      }
+    case 'sapper':
+      return {
+        initCommand: 'degit sveltejs/sapper-template#rollup',
+        devDeps: [
+          '@rollup/plugin-typescript',
+          '@testing-library/svelte',
+          '@tsconfig/svelte',
+          'prettier-plugin-svelte',
+          'rollup-plugin-svelte-svg',
+          'svelte-check',
+          'svelte-htm',
+          'svelte-jester',
+          'svelte-preprocess',
         ],
       }
     default:
@@ -114,10 +138,8 @@ function runInit(answers, options = {}) {
     // includeCypress = false,
   } = answers
   const { openCode = false } = options
-  const { initCommand, devDeps = [], configTasks = [] } = getProjectConfig(
-    projectType
-  )
-  const isWeb = ['gatsby', 'next'].includes(projectType)
+  const { initCommand, devDeps = [] } = getProjectConfig(projectType)
+  const isWeb = ['gatsby', 'next', 'sapper'].includes(projectType)
 
   new Listr([
     {
@@ -129,24 +151,21 @@ function runInit(answers, options = {}) {
       task: () =>
         installDev(
           [
-            'babel-eslint',
+            'babel-eslint', // TODO: Do I always need this?
             'babel-jest',
             'eslint',
             'eslint-config-prettier',
-            'eslint-plugin-import',
+            'eslint-plugin-import', // TODO: May only need this for React projects
             'eslint-plugin-jest',
             'eslint-plugin-jest-dom',
-            'eslint-plugin-jsx-a11y',
             'eslint-plugin-prettier',
-            'eslint-plugin-react',
-            'eslint-plugin-react-hooks',
             'eslint-plugin-testing-library',
             'husky',
             'jest',
             'lint-staged',
             'prettier',
             ...(isWeb
-              ? ['@testing-library/react', '@testing-library/jest-dom']
+              ? ['@testing-library/jest-dom', '@testing-library/user-event']
               : []),
             ...devDeps,
             ...(includeTypeScript
@@ -165,7 +184,7 @@ function runInit(answers, options = {}) {
       // TODO: Create jest, eslint, prettier, prettierignore, husky, lint-staged, and (if applicable) typescript and cypress config files, and add jest test setup file
       // TODO: Note - probably want to check for the existence of one of the mentioned configs (gatsby starts you out with prettierrc and ignore)
       title: 'Creating configuration files',
-      task: () => createConfigs(projectName, configTasks),
+      task: () => createConfigs(projectName, projectType),
     },
     // TODO: Create jest setup file
     // {
