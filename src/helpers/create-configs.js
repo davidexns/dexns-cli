@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const { getPackageJson } = require('./package-json')
+const buildEslintConfig = require('../config/eslint')
 
 function copyFiles(projectRoot, fileNames = []) {
   fileNames.forEach(([fromName, to]) => {
@@ -17,7 +18,7 @@ function copyFiles(projectRoot, fileNames = []) {
 // Approach thoughts:
 // ESLint config should be extending an eslint-config-dexns something or other
 
-function createConfigs(dirName, options) {
+function createConfigs(dirName, type) {
   const rootDir = `${process.cwd()}/${dirName}`
 
   // TODO: check if TypeScript and/or Cypress are flagged
@@ -38,13 +39,22 @@ function createConfigs(dirName, options) {
   // Create the files (reading existing if necessary?)
   // TODO: Instead of copying like this, they should be imported/required and assigned in newly created files
   copyFiles(rootDir, [
-    ['eslint.js', '.eslintrc.js'],
     ['husky.js', '.huskyrc.js'],
     ['jest.js', 'jest.config.js'],
     ['lint-staged.js', '.lintstagedrc.js'],
     ['prettier.js', '.prettierrc.js'],
     ['prettierignore', '.prettierignore'],
   ])
+
+  const eslint = buildEslintConfig(type)
+
+  fs.writeFile(
+    `${rootDir}/.eslintrc.json`,
+    JSON.stringify(eslint, null, 2),
+    err => {
+      if (err) throw err
+    }
+  )
 
   // TODO: Import the default configs (and potentially adding the configs from an existing file as overrides)
 }

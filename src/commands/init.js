@@ -138,9 +138,7 @@ function runInit(answers, options = {}) {
     // includeCypress = false,
   } = answers
   const { openCode = false } = options
-  const { initCommand, devDeps = [], configTasks = [] } = getProjectConfig(
-    projectType
-  )
+  const { initCommand, devDeps = [] } = getProjectConfig(projectType)
   const isWeb = ['gatsby', 'next', 'sapper'].includes(projectType)
 
   new Listr([
@@ -186,7 +184,7 @@ function runInit(answers, options = {}) {
       // TODO: Create jest, eslint, prettier, prettierignore, husky, lint-staged, and (if applicable) typescript and cypress config files, and add jest test setup file
       // TODO: Note - probably want to check for the existence of one of the mentioned configs (gatsby starts you out with prettierrc and ignore)
       title: 'Creating configuration files',
-      task: () => createConfigs(projectName, configTasks),
+      task: () => createConfigs(projectName, projectType),
     },
     // TODO: Create jest setup file
     // {
