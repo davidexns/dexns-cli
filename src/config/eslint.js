@@ -35,7 +35,7 @@ module.exports = type => {
           'plugin:jest-dom/recommended',
           // TODO: Clean this up I hate this tbh
           ...(isReact ? ['plugin:testing-library/react'] : []),
-          ...(type === 'svelte' ? ['plugin:testing-library/recommended'] : []),
+          ...(type === 'sapper' ? ['plugin:testing-library/recommended'] : []),
         ],
         rules: {
           'testing-library/prefer-presence-queries': ['error'],
