@@ -2,12 +2,28 @@ const fs = require('fs')
 const path = require('path')
 const { getPackageJson } = require('./package-json')
 const buildEslintConfig = require('../config/eslint')
+const buildHuskyConfig = require('../config/husky')
+const buildLintStagedConfig = require('../config/lint-staged')
+const buildPrettierConfig = require('../config/prettier')
 
 function copyFiles(projectRoot, fileNames = []) {
   fileNames.forEach(([fromName, to]) => {
     fs.copyFile(
       path.resolve(__dirname, `../config/${fromName}`),
       `${projectRoot}/${to}`,
+      err => {
+        if (err) throw err
+      }
+    )
+  })
+}
+
+// Configs should be array pairings of file name and data function.
+function writeJsonConfigs(rootDir, projectType, configs) {
+  configs.forEach(([fileName, dataFunction]) => {
+    fs.writeFile(
+      `${rootDir}/${fileName}`,
+      JSON.stringify(dataFunction(projectType), null, 2),
       err => {
         if (err) throw err
       }
@@ -39,22 +55,16 @@ function createConfigs(dirName, type) {
   // Create the files (reading existing if necessary?)
   // TODO: Instead of copying like this, they should be imported/required and assigned in newly created files
   copyFiles(rootDir, [
-    ['husky.js', '.huskyrc.js'],
     ['jest.js', 'jest.config.js'],
-    ['lint-staged.js', '.lintstagedrc.js'],
-    ['prettier.js', '.prettierrc.js'],
     ['prettierignore', '.prettierignore'],
   ])
 
-  const eslint = buildEslintConfig(type)
-
-  fs.writeFile(
-    `${rootDir}/.eslintrc.json`,
-    JSON.stringify(eslint, null, 2),
-    err => {
-      if (err) throw err
-    }
-  )
+  writeJsonConfigs(rootDir, type, [
+    ['.eslintrc.json', buildEslintConfig],
+    ['.huskyrc.json', buildHuskyConfig],
+    ['.lintstagedrc.json', buildLintStagedConfig],
+    ['.prettierrc.json', buildPrettierConfig],
+  ])
 
   // TODO: Import the default configs (and potentially adding the configs from an existing file as overrides)
 }
