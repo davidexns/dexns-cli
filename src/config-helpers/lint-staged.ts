@@ -1,4 +1,8 @@
-module.exports = type => {
+import { ProjectType } from '../typings/globals'
+
+export default function(
+  type: ProjectType
+): Record<string, ReadonlyArray<string>> {
   switch (type) {
     case 'sapper':
       return {

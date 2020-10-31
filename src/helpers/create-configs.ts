@@ -1,15 +1,18 @@
-const fs = require('fs')
-const path = require('path')
-const { getPackageJson } = require('./package-json')
-const buildEslintConfig = require('../config/eslint')
-const buildHuskyConfig = require('../config/husky')
-const buildLintStagedConfig = require('../config/lint-staged')
-const buildPrettierConfig = require('../config/prettier')
+import fs from 'fs'
+import path from 'path'
+// import { getPackageJson } from './package-json'
+import buildEslintConfig from '../config-helpers/eslint'
+import buildHuskyConfig from '../config-helpers/husky'
+import buildLintStagedConfig from '../config-helpers/lint-staged'
+import buildPrettierConfig from '../config-helpers/prettier'
+import { ProjectType } from '../typings/globals'
 
-function copyFiles(projectRoot, fileNames = []) {
+type CopyFileTuple = ReadonlyArray<[string, string]>
+
+function copyFiles(projectRoot: string, fileNames: CopyFileTuple = []) {
   fileNames.forEach(([fromName, to]) => {
     fs.copyFile(
-      path.resolve(__dirname, `../config/${fromName}`),
+      path.resolve(__dirname, `../config-helpers/${fromName}`),
       `${projectRoot}/${to}`,
       err => {
         if (err) throw err
@@ -19,7 +22,11 @@ function copyFiles(projectRoot, fileNames = []) {
 }
 
 // Configs should be array pairings of file name and data function.
-function writeJsonConfigs(rootDir, projectType, configs) {
+function writeJsonConfigs(
+  rootDir: string,
+  projectType: ProjectType,
+  configs: ReadonlyArray<[string, (type: ProjectType) => void]>
+) {
   configs.forEach(([fileName, dataFunction]) => {
     fs.writeFile(
       `${rootDir}/${fileName}`,
@@ -34,21 +41,22 @@ function writeJsonConfigs(rootDir, projectType, configs) {
 // Approach thoughts:
 // ESLint config should be extending an eslint-config-dexns something or other
 
-function createConfigs(dirName, type) {
+export function createConfigs(dirName: string, type: ProjectType): void {
   const rootDir = `${process.cwd()}/${dirName}`
+  // const rootDir = path.resolve(process.cwd(), `./${dirName}`)
 
   // TODO: check if TypeScript and/or Cypress are flagged
   // Check for the presence of existing files or configs in package.json???
   // get package.json
-  const packageJson = getPackageJson(dirName)
+  // const packageJson = getPackageJson(dirName)
 
   // check for jest, prettier, or eslint items in package.json and root directory
-  const configKeys = Object.keys(packageJson).filter(key =>
-    ['eslint', 'jest', 'prettier'].includes(key)
-  )
-  if (configKeys.length) {
-    // TODO: Shoot, need an option to delete properties from package.json
-  }
+  // const configKeys = Object.keys(packageJson).filter(key =>
+  //   ['eslint', 'jest', 'prettier'].includes(key)
+  // )
+  // if (configKeys.length) {
+  // TODO: Shoot, need an option to delete properties from package.json
+  // }
 
   // if found, pull the objects in and add them to overrides in the future TODO below, then remove from package.json
 
@@ -67,8 +75,4 @@ function createConfigs(dirName, type) {
   ])
 
   // TODO: Import the default configs (and potentially adding the configs from an existing file as overrides)
-}
-
-module.exports = {
-  createConfigs,
 }

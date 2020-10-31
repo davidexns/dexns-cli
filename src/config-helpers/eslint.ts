@@ -1,7 +1,13 @@
-module.exports = type => {
+import { ProjectType } from '../typings/globals'
+
+// TODO: Type the objects in this file better eventually
+export default function(type: ProjectType): Record<string, unknown> {
   const isReact = ['gatsby', 'next'].includes(type)
 
-  const config = {
+  const config: Record<string, unknown> & {
+    extends: ReadonlyArray<string>
+    parserOptions: Record<string, unknown>
+  } = {
     env: {
       browser: true,
       es6: true,
@@ -60,7 +66,7 @@ module.exports = type => {
   }
 
   if (isReact) {
-    const reactRules = {
+    const reactRules: Record<string, unknown> = {
       'react/jsx-no-useless-fragment': 'warn',
       'react/react-in-jsx-scope': 'off',
       'jsx-a11y/label-has-for': [

@@ -1,15 +1,22 @@
 module.exports = {
-  parser: 'babel-eslint',
-  parserOptions: {
-    ecmaVersion: 2017,
-  },
-  plugins: ['node'],
   env: {
     es6: true,
     jest: true,
+    node: true,
   },
-  extends: ['eslint:recommended', 'plugin:node/recommended', 'prettier'],
+  extends: [
+    'eslint:recommended',
+    'prettier',
+    'plugin:@typescript-eslint/recommended',
+    'prettier/@typescript-eslint',
+  ],
   globals: {
     name: 'off',
   },
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaVersion: 2019,
+    sourceType: 'module',
+  },
+  plugins: ['node'],
 }

@@ -2,13 +2,15 @@
   "name": "dexns-cli",
   "version": "0.0.1",
   "description": "Project starter CLI with some sensible additional defaults",
-  "main": "src/dexns.js",
+  "main": "dist/index.js",
   "bin": {
     "dexns": "bin/dexns"
   },
   "scripts": {
+    "build": "npx @vercel/ncc build src/dexns.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint src/**"
+    "lint": "eslint src/**",
+    "depcheck": "npx depcheck"
   },
   "keywords": [
     "cli"
@@ -24,6 +26,10 @@
     "prompts": "^2.3.0"
   },
   "devDependencies": {
+    "@types/listr": "^0.14.2",
+    "@types/prompts": "^2.0.9",
+    "@typescript-eslint/eslint-plugin": "^4.6.0",
+    "@typescript-eslint/parser": "^4.6.0",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.5.0",
@@ -32,7 +38,8 @@
     "husky": "^4.2.3",
     "jest": "^25.1.0",
     "lint-staged": "^10.0.8",
-    "prettier": "^1.18.2"
+    "prettier": "^1.18.2",
+    "typescript": "^4.0.5"
   },
   "engines": {
     "node": ">=8.5.0"
