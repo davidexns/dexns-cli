@@ -7,7 +7,7 @@
     "dexns": "bin/dexns"
   },
   "scripts": {
-    "build": "npx @vercel/ncc build src/dexns.ts",
+    "build": "ncc build src/dexns.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint src/**",
     "depcheck": "npx depcheck"
@@ -30,6 +30,7 @@
     "@types/prompts": "^2.0.9",
     "@typescript-eslint/eslint-plugin": "^4.6.0",
     "@typescript-eslint/parser": "^4.6.0",
+    "@vercel/ncc": "^0.24.1",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.5.0",

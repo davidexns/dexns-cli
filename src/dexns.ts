@@ -2,8 +2,6 @@ import Commander from 'commander'
 import init from './commands/init'
 import packageJson from '../package.json'
 
-// const packageJson = { version: '0.1.0' }
-
 const program = new Commander.Command('dexns').version(packageJson.version)
 
 program

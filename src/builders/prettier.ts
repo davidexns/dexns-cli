@@ -1,4 +1,4 @@
-import { ProjectType } from '../typings/globals'
+import { ProjectType } from '../constants/globals'
 
 export default function(type: ProjectType): Record<string, unknown> {
   const defaultConfig = {

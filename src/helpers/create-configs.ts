@@ -1,11 +1,11 @@
 import fs from 'fs'
 import path from 'path'
 // import { getPackageJson } from './package-json'
-import buildEslintConfig from '../config-helpers/eslint'
-import buildHuskyConfig from '../config-helpers/husky'
-import buildLintStagedConfig from '../config-helpers/lint-staged'
-import buildPrettierConfig from '../config-helpers/prettier'
-import { ProjectType } from '../typings/globals'
+import buildEslintConfig from '../builders/eslint'
+import buildHuskyConfig from '../builders/husky'
+import buildLintStagedConfig from '../builders/lint-staged'
+import buildPrettierConfig from '../builders/prettier'
+import { ProjectType } from '../constants/globals'
 
 type CopyFileTuple = ReadonlyArray<[string, string]>
 

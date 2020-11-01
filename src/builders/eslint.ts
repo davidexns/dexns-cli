@@ -1,4 +1,4 @@
-import { ProjectType } from '../typings/globals'
+import { ProjectType } from '../constants/globals'
 
 // TODO: Type the objects in this file better eventually
 export default function(type: ProjectType): Record<string, unknown> {

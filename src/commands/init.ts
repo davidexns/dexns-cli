@@ -7,7 +7,7 @@ import {
   installDev,
   openProject,
 } from '../helpers'
-import { ProjectType } from '../typings/globals'
+import { ProjectType } from '../constants/globals'
 
 const webProjectTypes = [
   { value: ProjectType.Next, title: 'Next' },
@@ -111,38 +111,38 @@ async function actionHandler(
   let isCancel = false
   const onCancel = () => (isCancel = true)
 
-  const promptQuestions: PromptObject[] = []
-  if (!projectType) {
-    promptQuestions.push({
+  const questions: Record<string, PromptObject> = {
+    projectType: {
       type: 'select',
       name: 'projectType',
       message: 'Which type of project would you like to create?',
       choices: [
         ...webProjectTypes,
-        {
-          value: ProjectType.ReactNative,
-          title: 'React Native',
-        },
+        { value: 'react-native', title: 'React Native' },
       ],
-    })
-  }
-  if (!projectName) {
-    promptQuestions.push({
-      type: isCancel ? null : 'text',
+    },
+    projectName: {
+      type: 'text',
       name: 'projectName',
       message: 'What would you like to name your project?',
       validate: input => input.length > 0 || 'Please provide a project name',
-    })
+    },
   }
 
-  const promptAnswers: InitAnswers | any = await prompts(promptQuestions, {
-    onCancel,
-  })
-
-  const answers = {
-    projectType,
-    projectName,
-    ...promptAnswers,
+  // TODO: Need better type for this, and potential cleanup
+  const answers: any = {
+    ...(projectType
+      ? { projectType }
+      : await prompts(questions.projectType, { onCancel })),
+    ...(projectName
+      ? { projectName }
+      : await prompts(
+          {
+            ...questions.projectName,
+            type: isCancel ? null : questions.projectName.type,
+          },
+          { onCancel }
+        )),
   }
 
   // If the user went through the prompt flow, ask about Cypress
