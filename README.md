@@ -4,7 +4,7 @@ This CLI is a work in progress. The goal of this CLI is to scaffold projects wit
 
 ## Running the CLI locally
 
-If you clone the repository and run `yarn link` or `npm link`, the CLI can then be run with the `dexns` command
+If you clone the repository and run `yarn link` or `npm link`, the CLI can then be run with the `dexns` command after building with `npm run build`.
 
 ## TODO
 

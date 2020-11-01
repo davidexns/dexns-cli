@@ -1,77 +1,76 @@
-const prompts = require('prompts')
-const Listr = require('listr')
-const {
+import prompts, { Answers, PromptObject } from 'prompts'
+import Listr from 'listr'
+import {
   createConfigs,
   npxRun,
   initializeGit,
   installDev,
   openProject,
-} = require('../helpers')
+} from '../helpers'
+import { ProjectType } from '../constants/globals'
 
-// type ProjectType = 'gatsby' | 'next' | 'react-native'
-// const projectTypes: ReadonlyArray<ProjectType> = [
-//   'gatsby',
-//   'next',
-//   'react-native',
-// ]
-const projectTypes = ['gatsby', 'next', 'sapper', 'react-native']
 const webProjectTypes = [
-  { value: 'next', title: 'Next' },
-  { value: 'sapper', title: 'Sapper (Svelte)' },
-  { value: 'gatsby', title: 'Gatsby' },
+  { value: ProjectType.Next, title: 'Next' },
+  { value: ProjectType.Sapper, title: 'Sapper (Svelte)' },
+  { value: ProjectType.Gatsby, title: 'Gatsby' },
 ]
 
-const questions = {
-  projectType: {
-    type: 'select',
-    name: 'projectType',
-    message: 'Which type of project would you like to create?',
-    choices: [
-      ...webProjectTypes,
-      { value: 'react-native', title: 'React Native' },
-    ],
-  },
-  projectName: {
-    type: 'text',
-    name: 'projectName',
-    message: 'What would you like to name your project?',
-    validate: input => input.length > 0 || 'Please provide a project name',
-  },
-  // typeScript: {
-  //   type: 'confirm',
-  //   name: 'includeTypeScript',
-  //   message: 'Would you like to use TypeScript?',
-  //   initial: true,
-  // },
-  // cypress: {
-  // when: answers => webProjectTypes.includes(answers.projectType),
-  //   name: 'includeCypress',
-  //   type: 'confirm',
-  //   message: 'Would you like to include Cypress?',
-  //   initial: true,
-  // },
+// const questions = {
+//   projectType: {
+//     type: 'select',
+//     name: 'projectType',
+//     message: 'Which type of project would you like to create?',
+//     choices: [
+//       ...webProjectTypes,
+//       { value: ProjectType.ReactNative, title: 'React Native' },
+//     ],
+//   },
+//   projectName: {
+//     type: 'text',
+//     name: 'projectName',
+//     message: 'What would you like to name your project?',
+//     validate: input => input.length > 0 || 'Please provide a project name',
+//   },
+// typeScript: {
+//   type: 'confirm',
+//   name: 'includeTypeScript',
+//   message: 'Would you like to use TypeScript?',
+//   initial: true,
+// },
+// cypress: {
+// when: answers => webProjectTypes.includes(answers.projectType),
+//   name: 'includeCypress',
+//   type: 'confirm',
+//   message: 'Would you like to include Cypress?',
+//   initial: true,
+// },
+// }
+
+type ProjectConfig = {
+  initCommand: string
+  devDeps: string[]
 }
 
-function getProjectConfig(type) {
+function getProjectConfig(type: ProjectType): ProjectConfig {
   const reactWebDeps = [
     '@testing-library/react',
     'eslint-plugin-jsx-a11y',
     'eslint-plugin-react',
     'eslint-plugin-react-hooks',
   ]
-  switch (type.toLowerCase()) {
-    case 'gatsby':
+  switch (type) {
+    case ProjectType.Gatsby:
       // TODO: will need a jest-preprocess file with babel-preset-gatsby
       return {
         initCommand: 'gatsby new',
         devDeps: reactWebDeps,
       }
-    case 'next':
+    case ProjectType.Next:
       return {
         initCommand: 'create-next-app',
         devDeps: reactWebDeps,
       }
-    case 'react-native':
+    case ProjectType.ReactNative:
       return {
         initCommand: 'react-native init',
         devDeps: [
@@ -80,7 +79,7 @@ function getProjectConfig(type) {
           '@testing-library/react-native',
         ],
       }
-    case 'sapper':
+    case ProjectType.Sapper:
       return {
         initCommand: 'degit sveltejs/sapper-template#rollup',
         devDeps: [
@@ -96,16 +95,43 @@ function getProjectConfig(type) {
         ],
       }
     default:
-      return {} // TODO: Probably throw
+      throw new Error()
   }
 }
 
-async function actionHandler(projectType, projectName, options) {
+type InitOptions = {
+  openCode?: boolean
+}
+
+async function actionHandler(
+  projectType?: ProjectType,
+  projectName?: string,
+  options?: InitOptions
+): Promise<void> {
   let isCancel = false
   const onCancel = () => (isCancel = true)
 
-  const answers = {
-    ...(projectType && projectTypes.includes(projectType)
+  const questions: Record<string, PromptObject> = {
+    projectType: {
+      type: 'select',
+      name: 'projectType',
+      message: 'Which type of project would you like to create?',
+      choices: [
+        ...webProjectTypes,
+        { value: 'react-native', title: 'React Native' },
+      ],
+    },
+    projectName: {
+      type: 'text',
+      name: 'projectName',
+      message: 'What would you like to name your project?',
+      validate: input => input.length > 0 || 'Please provide a project name',
+    },
+  }
+
+  // TODO: Need better type for this, and potential cleanup
+  const answers: any = {
+    ...(projectType
       ? { projectType }
       : await prompts(questions.projectType, { onCancel })),
     ...(projectName
@@ -119,7 +145,7 @@ async function actionHandler(projectType, projectName, options) {
         )),
   }
 
-  // If the user went through the prompt flow, ask about Cypress and TypeScript
+  // If the user went through the prompt flow, ask about Cypress
   // if (!projectName) {
   // save the options here
   // }
@@ -130,11 +156,15 @@ async function actionHandler(projectType, projectName, options) {
   }
 }
 
-function runInit(answers, options = {}) {
+type InitAnswers = {
+  projectName: string
+  projectType: ProjectType
+}
+
+function runInit(answers: InitAnswers, options: InitOptions = {}) {
   const {
     projectType,
     projectName,
-    includeTypeScript = true,
     // includeCypress = false,
   } = answers
   const { openCode = false } = options
@@ -168,14 +198,10 @@ function runInit(answers, options = {}) {
               ? ['@testing-library/jest-dom', '@testing-library/user-event']
               : []),
             ...devDeps,
-            ...(includeTypeScript
-              ? [
-                  'typescript',
-                  '@typescript-eslint/eslint-plugin',
-                  '@typescript-eslint/parser',
-                  'ts-jest',
-                ]
-              : []),
+            'typescript',
+            '@typescript-eslint/eslint-plugin',
+            '@typescript-eslint/parser',
+            'ts-jest',
           ],
           { cwd: projectName }
         ),
@@ -203,4 +229,4 @@ function runInit(answers, options = {}) {
     })
 }
 
-module.exports = actionHandler
+export default actionHandler

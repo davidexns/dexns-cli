@@ -1,4 +1,8 @@
-module.exports = type => {
+import { ProjectType } from '../constants/globals'
+
+export default function(
+  type: ProjectType
+): { hooks: Record<'pre-commit' | 'pre-push', string> } {
   return {
     hooks: {
       'pre-commit':

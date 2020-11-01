@@ -1,7 +1,6 @@
-const Commander = require('commander')
-// const prompts = require('prompts')
-const init = require('./commands/init')
-const packageJson = require('../package.json')
+import Commander from 'commander'
+import init from './commands/init'
+import packageJson from '../package.json'
 
 const program = new Commander.Command('dexns').version(packageJson.version)
 
@@ -11,10 +10,6 @@ program
   .description('Create a new project with sensible defaults')
   .option('-O, --open-code', 'Open the new repository in VS Code')
   // .option('-C, --include-cypress', 'include cypress dependency and config')
-  // .option(
-  //   '-T, --include-typescript',
-  //   'include typescript dependencies and configuration'
-  // )
   .action(init)
 
 program.parse(process.argv)

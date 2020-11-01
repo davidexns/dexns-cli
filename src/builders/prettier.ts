@@ -1,4 +1,6 @@
-module.exports = type => {
+import { ProjectType } from '../constants/globals'
+
+export default function(type: ProjectType): Record<string, unknown> {
   const defaultConfig = {
     endOfLine: 'lf',
     semi: false,
