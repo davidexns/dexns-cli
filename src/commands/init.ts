@@ -57,6 +57,7 @@ function getProjectConfig(type: ProjectType): ProjectConfig {
     'eslint-plugin-jsx-a11y',
     'eslint-plugin-react',
     'eslint-plugin-react-hooks',
+    '@types/react',
   ]
   switch (type) {
     case ProjectType.Gatsby:
