@@ -12,7 +12,7 @@ type CopyFileTuple = ReadonlyArray<[string, string]>
 function copyFiles(projectRoot: string, fileNames: CopyFileTuple = []) {
   fileNames.forEach(([fromName, to]) => {
     fs.copyFile(
-      path.resolve(__dirname, `../config-helpers/${fromName}`),
+      path.resolve(__dirname, `../builders/${fromName}`),
       `${projectRoot}/${to}`,
       err => {
         if (err) throw err
