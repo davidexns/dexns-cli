@@ -19,7 +19,6 @@ export default function(type: ProjectType): Record<string, unknown> {
       'plugin:import/warnings',
       'plugin:import/typescript',
       'plugin:@typescript-eslint/recommended',
-      'prettier/@typescript-eslint',
     ],
     overrides: [
       {
@@ -97,7 +96,6 @@ export default function(type: ProjectType): Record<string, unknown> {
       'plugin:jsx-a11y/recommended',
       'plugin:react/recommended',
       'plugin:react-hooks/recommended',
-      'prettier/react',
     ]
     // add JSX to parserOptions
     config.parserOptions.ecmaFeatures = {
